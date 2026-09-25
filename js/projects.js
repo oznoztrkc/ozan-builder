@@ -1,13 +1,9 @@
-// Ozan Builder - Sağlam Proje Yönetim Sistemi
+// Ozan Builder - Proje Yönetim Sistemi
 
 const ProjectManager = {
 
   storageKey: "ozan_builder_projects",
-
-  currentProjectKey: "ozan_builder_current_project",
-
-  legacyKey: "ozan_builder_project",
-
+  currentKey: "ozan_builder_current_project",
 
   // --------------------------------------------------
   // TÜM PROJELERİ GETİR
@@ -15,120 +11,38 @@ const ProjectManager = {
 
   getProjects() {
 
-    let saved =
+    const saved =
       localStorage.getItem(this.storageKey);
 
-    let projects = [];
-
-    if (saved) {
-
-      try {
-
-        projects = JSON.parse(saved);
-
-        if (!Array.isArray(projects)) {
-          projects = [];
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Projeler okunamadı:",
-          error
-        );
-
-        projects = [];
-
-      }
-
+    if (!saved) {
+      return [];
     }
 
+    try {
 
-    // Eski tek proje sistemini kontrol et
-    const oldProject =
-      localStorage.getItem(this.legacyKey);
+      const projects =
+        JSON.parse(saved);
 
+      return Array.isArray(projects)
+        ? projects
+        : [];
 
-    if (oldProject) {
+    } catch (error) {
 
-      try {
+      console.error(
+        "Projeler okunamadı:",
+        error
+      );
 
-        const old =
-          JSON.parse(oldProject);
-
-
-        if (old && old.name) {
-
-          const alreadyExists =
-            projects.some(
-              function(project) {
-
-                return (
-                  project.name === old.name
-                );
-
-              }
-            );
-
-
-          if (!alreadyExists) {
-
-            const migrated = {
-
-              id:
-                old.id ||
-                Date.now().toString(),
-
-              name:
-                old.name,
-
-              description:
-                old.description || "",
-
-              template:
-                old.template || "blank",
-
-              elements:
-                old.elements || [],
-
-              createdAt:
-                old.createdAt ||
-                new Date().toISOString(),
-
-              updatedAt:
-                new Date().toISOString()
-
-            };
-
-
-            projects.push(migrated);
-
-
-            this.saveProjects(projects);
-
-          }
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Eski proje taşınamadı:",
-          error
-        );
-
-      }
+      return [];
 
     }
-
-
-    return projects;
 
   },
 
 
   // --------------------------------------------------
-  // PROJELERİ KAYDET
+  // TÜM PROJELERİ KAYDET
   // --------------------------------------------------
 
   saveProjects(projects) {
@@ -137,8 +51,6 @@ const ProjectManager = {
       this.storageKey,
       JSON.stringify(projects)
     );
-
-    return true;
 
   },
 
@@ -151,7 +63,6 @@ const ProjectManager = {
 
     const projects =
       this.getProjects();
-
 
     const newProject = {
 
@@ -184,11 +95,17 @@ const ProjectManager = {
 
     };
 
+    projects.push(
+      newProject
+    );
 
-    projects.push(newProject);
+    this.saveProjects(
+      projects
+    );
 
-    this.saveProjects(projects);
-
+    this.setCurrentProject(
+      newProject.id
+    );
 
     return newProject;
 
@@ -196,22 +113,15 @@ const ProjectManager = {
 
 
   // --------------------------------------------------
-  // ID İLE PROJE GETİR
+  // AKTİF PROJE ID
   // --------------------------------------------------
 
-  getProject(id) {
+  setCurrentProject(id) {
 
-    const projects =
-      this.getProjects();
-
-
-    return projects.find(
-      function(project) {
-
-        return String(project.id) === String(id);
-
-      }
-    ) || null;
+    localStorage.setItem(
+      this.currentKey,
+      String(id)
+    );
 
   },
 
@@ -222,47 +132,67 @@ const ProjectManager = {
 
   getCurrentProject() {
 
-    const id =
+    const currentId =
       localStorage.getItem(
-        this.currentProjectKey
+        this.currentKey
       );
-
-
-    if (id) {
-
-      const project =
-        this.getProject(id);
-
-
-      if (project) {
-        return project;
-      }
-
-    }
-
-
-    // Eğer aktif proje bulunamazsa
-    // ilk mevcut projeyi kullan
 
     const projects =
       this.getProjects();
 
+    if (currentId) {
 
-    if (projects.length > 0) {
+      const project =
+        projects.find(
+          function(item) {
 
-      const first =
-        projects[0];
+            return String(item.id) ===
+              String(currentId);
 
+          }
+        );
 
-      this.setCurrentProject(
-        first.id
-      );
+      if (project) {
 
+        return project;
 
-      return first;
+      }
 
     }
 
+    // Eski tek proje sisteminden
+    // kalan veriyi de destekle
+
+    const oldProject =
+      localStorage.getItem(
+        "ozan_builder_project"
+      );
+
+    if (oldProject) {
+
+      try {
+
+        const parsed =
+          JSON.parse(oldProject);
+
+        if (parsed) {
+
+          return this.createProject(
+            parsed
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Eski proje okunamadı:",
+          error
+        );
+
+      }
+
+    }
 
     return null;
 
@@ -270,15 +200,12 @@ const ProjectManager = {
 
 
   // --------------------------------------------------
-  // AKTİF PROJEYİ AYARLA
+  // ESKİ SİSTEMLE UYUMLULUK
   // --------------------------------------------------
 
-  setCurrentProject(id) {
+  getProject() {
 
-    localStorage.setItem(
-      this.currentProjectKey,
-      String(id)
-    );
+    return this.getCurrentProject();
 
   },
 
@@ -289,71 +216,48 @@ const ProjectManager = {
 
   updateProject(project) {
 
-    if (!project) {
+    if (!project || !project.id) {
+
       return false;
-    }
-
-
-    // ID yoksa oluştur
-    if (!project.id) {
-
-      project.id =
-        Date.now().toString();
 
     }
-
 
     const projects =
       this.getProjects();
-
 
     const index =
       projects.findIndex(
         function(item) {
 
-          return (
-            String(item.id) ===
-            String(project.id)
-          );
+          return String(item.id) ===
+            String(project.id);
 
         }
       );
 
-
     if (index === -1) {
 
-      projects.push({
-
-        ...project,
-
-        updatedAt:
-          new Date().toISOString()
-
-      });
-
-    } else {
-
-      projects[index] = {
-
-        ...projects[index],
-
-        ...project,
-
-        updatedAt:
-          new Date().toISOString()
-
-      };
+      return false;
 
     }
 
+    projects[index] = {
 
-    this.saveProjects(projects);
+      ...projects[index],
+      ...project,
 
+      updatedAt:
+        new Date().toISOString()
+
+    };
+
+    this.saveProjects(
+      projects
+    );
 
     this.setCurrentProject(
       project.id
     );
-
 
     return true;
 
@@ -361,7 +265,7 @@ const ProjectManager = {
 
 
   // --------------------------------------------------
-  // PROJE SİL
+  // PROJEYİ SİL
   // --------------------------------------------------
 
   deleteProject(id) {
@@ -369,36 +273,33 @@ const ProjectManager = {
     const projects =
       this.getProjects();
 
-
     const filtered =
       projects.filter(
         function(project) {
 
-          return (
-            String(project.id) !==
-            String(id)
-          );
+          return String(project.id) !==
+            String(id);
 
         }
       );
 
+    this.saveProjects(
+      filtered
+    );
 
-    this.saveProjects(filtered);
-
-
-    const current =
+    const currentId =
       localStorage.getItem(
-        this.currentProjectKey
+        this.currentKey
       );
 
-
     if (
-      current &&
-      String(current) === String(id)
+      currentId &&
+      String(currentId) ===
+      String(id)
     ) {
 
       localStorage.removeItem(
-        this.currentProjectKey
+        this.currentKey
       );
 
     }
@@ -410,16 +311,16 @@ const ProjectManager = {
   // PROJE VAR MI?
   // --------------------------------------------------
 
-  hasProjects() {
+  hasProject() {
 
-    return (
-      this.getProjects().length > 0
-    );
+    return this.getCurrentProject() !== null;
 
   }
 
 };
 
+
+// GLOBAL OLARAK ERİŞİLEBİLİR YAP
 
 window.ProjectManager =
   ProjectManager;
