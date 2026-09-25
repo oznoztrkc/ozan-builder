@@ -44,3 +44,29 @@ const OzanEditor = {
 };
 
 window.OzanEditor = OzanEditor;
+// Yeni proje oluşturma
+
+function createProject(name, description, template = "blank") {
+
+  const project = {
+    id: Date.now().toString(),
+
+    name: name.trim(),
+
+    description: description.trim(),
+
+    template: template,
+
+    createdAt: new Date().toISOString(),
+
+    updatedAt: new Date().toISOString()
+  };
+
+  ProjectManager.saveProject(project);
+
+  OzanEditor.project = project;
+
+  return project;
+}
+
+window.createProject = createProject;
