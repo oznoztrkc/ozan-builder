@@ -1,4 +1,4 @@
-// Ozan Builder - Proje Yönetimi
+// Ozan Builder - Sağlam Proje Yönetim Sistemi
 
 const ProjectManager = {
 
@@ -6,38 +6,130 @@ const ProjectManager = {
 
   currentProjectKey: "ozan_builder_current_project",
 
+  legacyKey: "ozan_builder_project",
+
+
+  // --------------------------------------------------
+  // TÜM PROJELERİ GETİR
+  // --------------------------------------------------
 
   getProjects() {
 
-    const saved =
+    let saved =
       localStorage.getItem(this.storageKey);
 
-    if (!saved) {
-      return [];
+    let projects = [];
+
+    if (saved) {
+
+      try {
+
+        projects = JSON.parse(saved);
+
+        if (!Array.isArray(projects)) {
+          projects = [];
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Projeler okunamadı:",
+          error
+        );
+
+        projects = [];
+
+      }
+
     }
 
-    try {
 
-      const projects =
-        JSON.parse(saved);
+    // Eski tek proje sistemini kontrol et
+    const oldProject =
+      localStorage.getItem(this.legacyKey);
 
-      return Array.isArray(projects)
-        ? projects
-        : [];
 
-    } catch (error) {
+    if (oldProject) {
 
-      console.error(
-        "Projeler okunamadı:",
-        error
-      );
+      try {
 
-      return [];
+        const old =
+          JSON.parse(oldProject);
+
+
+        if (old && old.name) {
+
+          const alreadyExists =
+            projects.some(
+              function(project) {
+
+                return (
+                  project.name === old.name
+                );
+
+              }
+            );
+
+
+          if (!alreadyExists) {
+
+            const migrated = {
+
+              id:
+                old.id ||
+                Date.now().toString(),
+
+              name:
+                old.name,
+
+              description:
+                old.description || "",
+
+              template:
+                old.template || "blank",
+
+              elements:
+                old.elements || [],
+
+              createdAt:
+                old.createdAt ||
+                new Date().toISOString(),
+
+              updatedAt:
+                new Date().toISOString()
+
+            };
+
+
+            projects.push(migrated);
+
+
+            this.saveProjects(projects);
+
+          }
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Eski proje taşınamadı:",
+          error
+        );
+
+      }
 
     }
+
+
+    return projects;
 
   },
 
+
+  // --------------------------------------------------
+  // PROJELERİ KAYDET
+  // --------------------------------------------------
 
   saveProjects(projects) {
 
@@ -50,6 +142,10 @@ const ProjectManager = {
 
   },
 
+
+  // --------------------------------------------------
+  // YENİ PROJE OLUŞTUR
+  // --------------------------------------------------
 
   createProject(project) {
 
@@ -91,7 +187,6 @@ const ProjectManager = {
 
     projects.push(newProject);
 
-
     this.saveProjects(projects);
 
 
@@ -99,6 +194,10 @@ const ProjectManager = {
 
   },
 
+
+  // --------------------------------------------------
+  // ID İLE PROJE GETİR
+  // --------------------------------------------------
 
   getProject(id) {
 
@@ -109,13 +208,17 @@ const ProjectManager = {
     return projects.find(
       function(project) {
 
-        return project.id === id;
+        return String(project.id) === String(id);
 
       }
     ) || null;
 
   },
 
+
+  // --------------------------------------------------
+  // AKTİF PROJEYİ GETİR
+  // --------------------------------------------------
 
   getCurrentProject() {
 
@@ -125,30 +228,78 @@ const ProjectManager = {
       );
 
 
-    if (!id) {
-      return null;
+    if (id) {
+
+      const project =
+        this.getProject(id);
+
+
+      if (project) {
+        return project;
+      }
+
     }
 
 
-    return this.getProject(id);
+    // Eğer aktif proje bulunamazsa
+    // ilk mevcut projeyi kullan
+
+    const projects =
+      this.getProjects();
+
+
+    if (projects.length > 0) {
+
+      const first =
+        projects[0];
+
+
+      this.setCurrentProject(
+        first.id
+      );
+
+
+      return first;
+
+    }
+
+
+    return null;
 
   },
 
+
+  // --------------------------------------------------
+  // AKTİF PROJEYİ AYARLA
+  // --------------------------------------------------
 
   setCurrentProject(id) {
 
     localStorage.setItem(
       this.currentProjectKey,
-      id
+      String(id)
     );
 
   },
 
 
+  // --------------------------------------------------
+  // PROJE GÜNCELLE
+  // --------------------------------------------------
+
   updateProject(project) {
 
-    if (!project || !project.id) {
+    if (!project) {
       return false;
+    }
+
+
+    // ID yoksa oluştur
+    if (!project.id) {
+
+      project.id =
+        Date.now().toString();
+
     }
 
 
@@ -160,7 +311,10 @@ const ProjectManager = {
       projects.findIndex(
         function(item) {
 
-          return item.id === project.id;
+          return (
+            String(item.id) ===
+            String(project.id)
+          );
 
         }
       );
@@ -168,30 +322,47 @@ const ProjectManager = {
 
     if (index === -1) {
 
-      return false;
+      projects.push({
+
+        ...project,
+
+        updatedAt:
+          new Date().toISOString()
+
+      });
+
+    } else {
+
+      projects[index] = {
+
+        ...projects[index],
+
+        ...project,
+
+        updatedAt:
+          new Date().toISOString()
+
+      };
 
     }
 
 
-    projects[index] = {
-
-      ...projects[index],
-
-      ...project,
-
-      updatedAt:
-        new Date().toISOString()
-
-    };
-
-
     this.saveProjects(projects);
+
+
+    this.setCurrentProject(
+      project.id
+    );
 
 
     return true;
 
   },
 
+
+  // --------------------------------------------------
+  // PROJE SİL
+  // --------------------------------------------------
 
   deleteProject(id) {
 
@@ -203,7 +374,10 @@ const ProjectManager = {
       projects.filter(
         function(project) {
 
-          return project.id !== id;
+          return (
+            String(project.id) !==
+            String(id)
+          );
 
         }
       );
@@ -218,7 +392,10 @@ const ProjectManager = {
       );
 
 
-    if (current === id) {
+    if (
+      current &&
+      String(current) === String(id)
+    ) {
 
       localStorage.removeItem(
         this.currentProjectKey
@@ -229,9 +406,15 @@ const ProjectManager = {
   },
 
 
+  // --------------------------------------------------
+  // PROJE VAR MI?
+  // --------------------------------------------------
+
   hasProjects() {
 
-    return this.getProjects().length > 0;
+    return (
+      this.getProjects().length > 0
+    );
 
   }
 
