@@ -100,6 +100,11 @@
       margin-bottom: 8px;
     }
 
+    .project-list {
+      display: grid;
+      gap: 15px;
+    }
+
     .project-card {
       background: white;
       border: 1px solid #e5e7eb;
@@ -112,6 +117,10 @@
       box-shadow: 0 5px 20px rgba(0,0,0,.04);
     }
 
+    .project-info {
+      min-width: 0;
+    }
+
     .project-info h3 {
       margin: 0 0 8px;
       font-size: 20px;
@@ -121,6 +130,7 @@
       margin: 0;
       color: #6b7280;
       line-height: 1.5;
+      word-break: break-word;
     }
 
     .template {
@@ -131,6 +141,12 @@
       color: #4338ca;
       border-radius: 6px;
       font-size: 12px;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
     }
 
     .open-btn {
@@ -146,6 +162,29 @@
 
     .open-btn:hover {
       background: #000;
+    }
+
+    .delete-btn {
+      border: 1px solid #e5e7eb;
+      background: white;
+      color: #dc2626;
+      padding: 11px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .delete-btn:hover {
+      background: #fef2f2;
+    }
+
+    .loading {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 30px;
+      text-align: center;
+      color: #6b7280;
     }
 
     @media (max-width: 700px) {
@@ -167,87 +206,262 @@
         align-items: stretch;
       }
 
-      .open-btn {
+      .project-actions {
         width: 100%;
+      }
+
+      .open-btn,
+      .delete-btn {
+        flex: 1;
       }
     }
   </style>
 </head>
-<script src="js/projects.js"></script>
-<script src="js/app.js"></script>
+
 <body>
 
-<header>
+  <header>
 
-  <div class="logo">
-    Ozan <span>Builder</span>
-  </div>
-
-  <button
-    class="new-btn"
-  onclick="window.location.href='/editor.html'"
-  >
-    + Yeni Proje
-  </button>
-
-</header>
-
-
-<main class="container">
-
-  <section class="hero">
-
-    <h1>
-      Kendi web siteni oluştur.
-    </h1>
-
-    <p>
-      Projeni oluştur, tasarla ve ilerleyen aşamalarda
-      yapay zekâ ile geliştirmeye devam et.
-    </p>
-
-  </section>
-
-
-  <section class="projects">
-
-    <div class="projects-title">
-
-      <h2>
-        Projelerim
-      </h2>
-
+    <div class="logo">
+      Ozan <span>Builder</span>
     </div>
 
+    <button
+      class="new-btn"
+      onclick="newProject()"
+    >
+      + Yeni Proje
+    </button>
 
-    <div id="projectContainer"></div>
-
-  </section>
-
-</main>
-
-
-<script>
-
-function newProject() {
-
-  window.location.href = "editor.html";
-
-}
+  </header>
 
 
-function openProject() {
+  <main class="container">
 
-  window.location.href = "editor.html";
+    <section class="hero">
 
-}
+      <h1>
+        Kendi web siteni oluştur.
+      </h1>
+
+      <p>
+        Projeni oluştur, tasarla ve ilerleyen aşamalarda
+        yapay zekâ ile geliştirmeye devam et.
+      </p>
+
+    </section>
 
 
-function showProjects() {
+    <section class="projects">
 
-  var container =
-    document.getElementById("projectContainer");
+      <div class="projects-title">
+
+        <h2>
+          Projelerim
+        </h2>
+
+      </div>
 
 
-  var saved =
-   
+      <div id="projectContainer">
+
+        <div class="loading">
+          Projeler yükleniyor...
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- Proje yönetim sistemi -->
+  <script src="js/projects.js"></script>
+
+  <script>
+
+    function newProject() {
+
+      window.location.href = "editor.html";
+
+    }
+
+
+    function openProject(id) {
+
+      localStorage.setItem(
+        "ozan_builder_current_project",
+        id
+      );
+
+      window.location.href = "editor.html";
+
+    }
+
+
+    function escapeHTML(value) {
+
+      if (value === null || value === undefined) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function getTemplateName(template) {
+
+      var names = {
+
+        blank: "Boş Proje",
+
+        business: "Kurumsal",
+
+        portfolio: "Portföy",
+
+        blog: "Blog"
+
+      };
+
+      return names[template] || "Boş Proje";
+
+    }
+
+
+    function deleteProject(id) {
+
+      var confirmed =
+        confirm(
+          "Bu projeyi silmek istediğine emin misin?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      ProjectManager.deleteProject(id);
+
+      showProjects();
+
+    }
+
+
+    function showProjects() {
+
+      var container =
+        document.getElementById(
+          "projectContainer"
+        );
+
+
+      var projects =
+        ProjectManager.getProjects();
+
+
+      if (!projects || projects.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="empty">
+
+            <strong>
+              Henüz projen yok.
+            </strong>
+
+            Yeni bir proje oluşturarak başlayabilirsin.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML = `
+
+        <div class="project-list">
+
+          ${projects.map(function(project) {
+
+            return `
+
+              <div class="project-card">
+
+                <div class="project-info">
+
+                  <h3>
+                    ${escapeHTML(project.name)}
+                  </h3>
+
+                  <p>
+                    ${
+                      escapeHTML(
+                        project.description ||
+                        "Açıklama bulunmuyor."
+                      )
+                    }
+                  </p>
+
+                  <span class="template">
+
+                    Şablon:
+                    ${
+                      escapeHTML(
+                        getTemplateName(
+                          project.template
+                        )
+                      )
+                    }
+
+                  </span>
+
+                </div>
+
+
+                <div class="project-actions">
+
+                  <button
+                    class="open-btn"
+                    onclick="openProject('${project.id}')"
+                  >
+                    Aç
+                  </button>
+
+                  <button
+                    class="delete-btn"
+                    onclick="deleteProject('${project.id}')"
+                  >
+                    Sil
+                  </button>
+
+                </div>
+
+              </div>
+
+            `;
+
+          }).join("")}
+
+        </div>
+
+      `;
+
+    }
+
+
+    // Sayfa açıldığında projeleri getir
+    showProjects();
+
+  </script>
+
+</body>
+</html>
