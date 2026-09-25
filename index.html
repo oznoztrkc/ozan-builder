@@ -8,10 +8,11 @@
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
       background: #f5f5f7;
       color: #222;
@@ -19,141 +20,192 @@
 
     header {
       height: 64px;
-      background: #ffffff;
-      border-bottom: 1px solid #ddd;
+      background: #171717;
+      color: white;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      padding: 0 24px;
     }
 
     .logo {
       font-size: 20px;
       font-weight: bold;
-      color: #6c35de;
     }
 
-    .top-buttons {
-      display: flex;
-      gap: 8px;
+    .logo span {
+      color: #8b5cf6;
     }
 
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-weight: 600;
+    .status {
+      font-size: 13px;
+      color: #aaa;
     }
 
-    .primary {
-      background: #6c35de;
-      color: white;
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr 280px;
+      height: calc(100vh - 64px);
     }
 
-    .secondary {
-      background: #eee;
-      color: #333;
-    }
-
-    main {
-      display: flex;
-      min-height: calc(100vh - 64px);
-    }
-
-    aside {
-      width: 250px;
+    .sidebar,
+    .rightbar {
       background: white;
       border-right: 1px solid #ddd;
       padding: 20px;
+      overflow-y: auto;
     }
 
-    aside h3 {
-      margin-top: 0;
+    .rightbar {
+      border-right: none;
+      border-left: 1px solid #ddd;
     }
 
-    .tool {
+    .workspace {
+      padding: 24px;
+      overflow: auto;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .button {
       width: 100%;
-      padding: 13px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      background: #fafafa;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f1f1f1;
+      margin-bottom: 8px;
       cursor: pointer;
       text-align: left;
     }
 
-    .tool:hover {
-      background: #f0ebff;
-      border-color: #6c35de;
+    .button:hover {
+      background: #e7e7e7;
     }
 
-    .canvas-area {
-      flex: 1;
-      padding: 25px;
+    .primary {
+      background: #7c3aed;
+      color: white;
+      text-align: center;
+      font-weight: bold;
     }
 
-    .canvas-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
+    .primary:hover {
+      background: #6d28d9;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px;
+      resize: vertical;
+      font-family: inherit;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #7c3aed;
     }
 
     .preview {
       min-height: 600px;
       background: white;
-      border: 2px dashed #bbb;
       border-radius: 12px;
-      padding: 30px;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 20px rgba(0,0,0,.05);
+      overflow: hidden;
+    }
+
+    .preview-header {
+      height: 55px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      font-weight: bold;
+    }
+
+    .preview-content {
+      padding: 40px;
+    }
+
+    .preview-content h1 {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .preview-content p {
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 20px;
     }
 
     .empty {
+      color: #999;
       text-align: center;
-      padding-top: 180px;
-      color: #777;
+      padding: 80px 20px;
     }
 
-    .empty h2 {
-      color: #333;
+    .field {
+      margin-bottom: 18px;
     }
 
-    .builder-element {
-      margin: 15px 0;
-      padding: 10px;
-      border: 1px dashed transparent;
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
     }
 
-    .builder-element:hover {
-      border-color: #6c35de;
+    input,
+    select {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
     }
 
-    @media (max-width: 700px) {
-      main {
-        flex-direction: column;
+    input:focus,
+    select:focus {
+      border-color: #7c3aed;
+    }
+
+    .mobile-preview {
+      max-width: 390px;
+      margin: auto;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 220px 1fr;
       }
 
-      aside {
-        width: 100%;
-        border-right: 0;
-        border-bottom: 1px solid #ddd;
+      .rightbar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .app {
+        display: block;
       }
 
-      .tool {
-        display: inline-block;
-        width: auto;
-        margin-right: 5px;
+      .sidebar {
+        display: none;
       }
 
-      .canvas-area {
-        padding: 15px;
-      }
-
-      .preview {
-        min-height: 500px;
+      .workspace {
+        padding: 12px;
       }
     }
   </style>
@@ -162,192 +214,315 @@
 <body>
 
 <header>
-  <div class="logo">🚀 Ozan Builder</div>
-
-  <div class="top-buttons">
-    <button class="secondary" onclick="clearCanvas()">
-      Temizle
-    </button>
-
-    <button class="primary" onclick="saveProject()">
-      Kaydet
-    </button>
-  </div>
+  <div class="logo">Ozan <span>Builder</span></div>
+  <div class="status">Ücretsiz Web Site Builder</div>
 </header>
 
-<main>
+<div class="app">
 
-  <aside>
-    <h3>Elementler</h3>
+  <aside class="sidebar">
 
-    <div class="tool" onclick="addTitle()">
-      🔤 Başlık ekle
+    <div class="section">
+      <h2>Sayfa</h2>
+
+      <button class="button" onclick="newPage()">
+        + Yeni Sayfa
+      </button>
+
+      <button class="button" onclick="selectPage('Ana Sayfa')">
+        🏠 Ana Sayfa
+      </button>
+
+      <button class="button" onclick="selectPage('Hakkımızda')">
+        📄 Hakkımızda
+      </button>
+
+      <button class="button" onclick="selectPage('İletişim')">
+        📞 İletişim
+      </button>
     </div>
 
-    <div class="tool" onclick="addText()">
-      📝 Metin ekle
+    <div class="section">
+      <h2>Bileşenler</h2>
+
+      <button class="button" onclick="addComponent('Başlık')">
+        T Başlık
+      </button>
+
+      <button class="button" onclick="addComponent('Metin')">
+        📝 Metin
+      </button>
+
+      <button class="button" onclick="addComponent('Buton')">
+        🔘 Buton
+      </button>
+
+      <button class="button" onclick="addComponent('Görsel')">
+        🖼 Görsel
+      </button>
+
+      <button class="button" onclick="addComponent('Kart')">
+        🗂 Kart
+      </button>
     </div>
 
-    <div class="tool" onclick="addButton()">
-      🔘 Buton ekle
-    </div>
-
-    <div class="tool" onclick="addSection()">
-      📦 Bölüm ekle
-    </div>
   </aside>
 
-  <section class="canvas-area">
+  <main class="workspace">
 
-    <div class="canvas-header">
-      <h2>Site Önizleme</h2>
-      <span id="status">Hazır</span>
-    </div>
+    <div class="preview">
 
-    <div class="preview" id="preview">
+      <div class="preview-header">
+        <span id="pageName">Ana Sayfa</span>
+      </div>
 
-      <div class="empty" id="emptyState">
-        <h2>Web siteni burada oluştur</h2>
+      <div id="previewContent" class="preview-content">
+
+        <h1>Web siteni oluşturmaya başla</h1>
+
         <p>
-          Soldaki elementlerden birini seçerek başla.
+          Sol taraftaki bileşenleri kullanabilir veya sağ taraftaki
+          ayarlardan sitenin içeriğini değiştirebilirsin.
         </p>
+
       </div>
 
     </div>
 
-  </section>
+  </main>
 
-</main>
+  <aside class="rightbar">
+
+    <div class="section">
+
+      <h2>Sayfa Ayarları</h2>
+
+      <div class="field">
+        <label>Site Başlığı</label>
+
+        <input
+          id="siteTitle"
+          type="text"
+          value="Yeni Web Sitem"
+          oninput="updateSite()"
+        >
+      </div>
+
+      <div class="field">
+        <label>Başlık</label>
+
+        <input
+          id="mainTitle"
+          type="text"
+          value="Web siteni oluşturmaya başla"
+          oninput="updateSite()"
+        >
+      </div>
+
+      <div class="field">
+
+        <label>Açıklama</label>
+
+        <textarea
+          id="description"
+          oninput="updateSite()"
+        >Sol taraftaki bileşenleri kullanarak web siteni oluştur.</textarea>
+
+      </div>
+
+      <button class="button primary" onclick="saveSite()">
+        💾 Kaydet
+      </button>
+
+      <button class="button" onclick="previewSite()">
+        👁 Önizleme
+      </button>
+
+    </div>
+
+    <div class="section">
+
+      <h2>AI Komutu</h2>
+
+      <textarea
+        id="aiCommand"
+        placeholder="Örn: Mor ve beyaz renklerde modern bir internet sitesi oluştur..."
+      ></textarea>
+
+      <button class="button primary" onclick="runAICommand()">
+        ✨ Komutu Uygula
+      </button>
+
+    </div>
+
+  </aside>
+
+</div>
 
 <script>
 
-let elementCount = 0;
+let pages = {
+  "Ana Sayfa": {
+    title: "Web siteni oluşturmaya başla",
+    description: "Sol taraftaki bileşenleri kullanarak web siteni oluştur."
+  },
 
-function removeEmpty() {
-  const empty = document.getElementById("emptyState");
+  "Hakkımızda": {
+    title: "Hakkımızda",
+    description: "Bu alanı daha sonra düzenleyebilirsin."
+  },
 
-  if (empty) {
-    empty.remove();
+  "İletişim": {
+    title: "İletişim",
+    description: "İletişim bilgilerini buraya ekleyebilirsin."
+  }
+};
+
+let currentPage = "Ana Sayfa";
+
+function selectPage(page) {
+
+  currentPage = page;
+
+  document.getElementById("pageName").innerText = page;
+
+  document.getElementById("mainTitle").value =
+    pages[page].title;
+
+  document.getElementById("description").value =
+    pages[page].description;
+
+  updateSite();
+}
+
+function updateSite() {
+
+  const title =
+    document.getElementById("mainTitle").value;
+
+  const description =
+    document.getElementById("description").value;
+
+  pages[currentPage] = {
+    title: title,
+    description: description
+  };
+
+  document.getElementById("previewContent").innerHTML = `
+    <h1>${escapeHTML(title)}</h1>
+    <p>${escapeHTML(description)}</p>
+  `;
+}
+
+function newPage() {
+
+  const name =
+    prompt("Yeni sayfanın adı:");
+
+  if (!name) return;
+
+  pages[name] = {
+    title: name,
+    description: "Bu sayfanın içeriğini düzenleyebilirsin."
+  };
+
+  selectPage(name);
+}
+
+function addComponent(type) {
+
+  const container =
+    document.getElementById("previewContent");
+
+  if (type === "Başlık") {
+
+    container.innerHTML +=
+      "<h2>Yeni Başlık</h2>";
+
+  }
+
+  if (type === "Metin") {
+
+    container.innerHTML +=
+      "<p>Yeni metin alanı.</p>";
+
+  }
+
+  if (type === "Buton") {
+
+    container.innerHTML +=
+      '<button class="button primary">Yeni Buton</button>';
+
+  }
+
+  if (type === "Görsel") {
+
+    container.innerHTML +=
+      "<p>🖼 Görsel alanı</p>";
+
+  }
+
+  if (type === "Kart") {
+
+    container.innerHTML += `
+      <div style="
+        padding:20px;
+        border:1px solid #ddd;
+        border-radius:12px;
+        margin-top:20px;
+      ">
+        <h3>Yeni Kart</h3>
+        <p>Kart açıklaması.</p>
+      </div>
+    `;
+
   }
 }
 
-function createElement(content) {
-
-  removeEmpty();
-
-  elementCount++;
-
-  const element = document.createElement("div");
-
-  element.className = "builder-element";
-
-  element.innerHTML = content;
-
-  element.dataset.id = elementCount;
-
-  document
-    .getElementById("preview")
-    .appendChild(element);
-
-  document.getElementById("status").innerText =
-    elementCount + " element";
-}
-
-function addTitle() {
-
-  createElement(`
-    <h1 contenteditable="true">
-      Yeni Başlık
-    </h1>
-  `);
-}
-
-function addText() {
-
-  createElement(`
-    <p contenteditable="true">
-      Buraya metin yazabilirsin.
-    </p>
-  `);
-}
-
-function addButton() {
-
-  createElement(`
-    <button class="primary">
-      Yeni Buton
-    </button>
-  `);
-}
-
-function addSection() {
-
-  createElement(`
-    <section style="
-      padding:30px;
-      background:#f5f0ff;
-      border-radius:12px;
-    ">
-      <h2 contenteditable="true">
-        Yeni Bölüm
-      </h2>
-
-      <p contenteditable="true">
-        Bölüm içeriğini buraya yaz.
-      </p>
-    </section>
-  `);
-}
-
-function clearCanvas() {
-
-  document.getElementById("preview").innerHTML = `
-    <div class="empty" id="emptyState">
-      <h2>Web siteni burada oluştur</h2>
-      <p>
-        Soldaki elementlerden birini seçerek başla.
-      </p>
-    </div>
-  `;
-
-  elementCount = 0;
-
-  document.getElementById("status").innerText =
-    "Hazır";
-}
-
-function saveProject() {
-
-  const content =
-    document.getElementById("preview").innerHTML;
+function saveSite() {
 
   localStorage.setItem(
-    "ozan-builder-project",
-    content
+    "ozan-builder-pages",
+    JSON.stringify(pages)
   );
 
-  document.getElementById("status").innerText =
-    "Kaydedildi ✓";
+  alert("Site tarayıcıya kaydedildi.");
 }
 
-window.onload = function() {
+function previewSite() {
 
-  const saved =
-    localStorage.getItem(
-      "ozan-builder-project"
-    );
+  alert(
+    "Önizleme modu sonraki aşamada ayrı bir sayfa olarak geliştirilecek."
+  );
+}
 
-  if (saved) {
+function runAICommand() {
 
-    document.getElementById("preview").innerHTML =
-      saved;
+  const command =
+    document.getElementById("aiCommand").value.trim();
 
-    document.getElementById("status").innerText =
-      "Kayıtlı proje";
+  if (!command) {
 
+    alert("Önce bir komut yaz.");
+
+    return;
   }
 
-};
+  alert(
+    "AI motoru henüz bağlanmadı.\n\nKomutun alındı:\n" +
+    command +
+    "\n\nSonraki aşamada gerçek AI bağlantısını ekleyeceğiz."
+  );
+}
+
+function escapeHTML(text) {
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+}
 
 </script>
 
