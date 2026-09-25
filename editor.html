@@ -26,6 +26,9 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
     .logo {
@@ -62,17 +65,26 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 260px 1fr;
+      grid-template-columns: 230px 1fr 280px;
       min-height: calc(100vh - 64px);
     }
 
-    .sidebar {
+    .sidebar,
+    .settings {
       background: white;
-      border-right: 1px solid #e5e7eb;
       padding: 20px;
     }
 
-    .sidebar h3 {
+    .sidebar {
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .settings {
+      border-left: 1px solid #e5e7eb;
+    }
+
+    .sidebar h3,
+    .settings h3 {
       margin: 0 0 18px;
     }
 
@@ -137,16 +149,18 @@
       position: relative;
       padding: 15px;
       margin-bottom: 12px;
-      border: 1px solid transparent;
+      border: 2px solid transparent;
       cursor: pointer;
+      border-radius: 8px;
     }
 
     .element:hover {
-      border: 1px dashed #635bff;
+      border-color: #c7d2fe;
     }
 
     .element.selected {
-      border: 2px solid #635bff;
+      border-color: #635bff;
+      background: #fafaff;
     }
 
     .element h1 {
@@ -165,12 +179,85 @@
       border-radius: 10px;
     }
 
+    .element button {
+      background: #635bff;
+      color: white;
+    }
+
     .empty-message {
       text-align: center;
       color: #9ca3af;
     }
 
-    @media (max-width: 800px) {
+    .settings-empty {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      font-size: 14px;
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .update-btn {
+      width: 100%;
+      background: #111827;
+      color: white;
+      margin-top: 5px;
+    }
+
+    .delete-btn {
+      width: 100%;
+      background: #fee2e2;
+      color: #b91c1c;
+      margin-top: 10px;
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .check-row input {
+      width: auto;
+    }
+
+    @media (max-width: 1000px) {
+
+      .layout {
+        grid-template-columns: 200px 1fr;
+      }
+
+      .settings {
+        display: none;
+      }
+
+    }
+
+    @media (max-width: 700px) {
 
       .layout {
         grid-template-columns: 1fr;
@@ -179,6 +266,10 @@
       .sidebar {
         border-right: 0;
         border-bottom: 1px solid #e5e7eb;
+      }
+
+      .workspace {
+        padding: 15px;
       }
 
       .canvas {
@@ -220,11 +311,11 @@
 
 <div class="layout">
 
+  <!-- SOL PANEL -->
+
   <aside class="sidebar">
 
-    <h3>
-      Elemanlar
-    </h3>
+    <h3>Elemanlar</h3>
 
     <button
       class="tool"
@@ -256,6 +347,8 @@
 
   </aside>
 
+
+  <!-- ORTA ALAN -->
 
   <main class="workspace">
 
@@ -297,6 +390,23 @@
 
   </main>
 
+
+  <!-- SAĞ PANEL -->
+
+  <aside class="settings">
+
+    <h3>Eleman Düzenle</h3>
+
+    <div
+      id="settingsContent"
+      class="settings-empty"
+    >
+      Düzenlemek için ortadaki alandan
+      bir elemana tıkla.
+    </div>
+
+  </aside>
+
 </div>
 
 
@@ -304,11 +414,20 @@
 
 <script>
 
-  var currentProject = null;
+  let currentProject = null;
 
-  var canvas =
+  let selectedElement = null;
+
+  const canvas =
     document.getElementById("canvasContent");
 
+  const settings =
+    document.getElementById("settingsContent");
+
+
+  // --------------------------------------------------
+  // PROJEYİ YÜKLE
+  // --------------------------------------------------
 
   function loadProject() {
 
@@ -320,7 +439,8 @@
 
       document.getElementById(
         "projectName"
-      ).textContent = "Proje bulunamadı";
+      ).textContent =
+        "Proje bulunamadı";
 
       return;
 
@@ -349,6 +469,7 @@
 
       canvas.innerHTML = "";
 
+
       currentProject.elements.forEach(
         function(element) {
 
@@ -362,19 +483,29 @@
   }
 
 
+  // --------------------------------------------------
+  // ELEMAN EKLE
+  // --------------------------------------------------
+
   function addElement(type, content) {
 
     if (!currentProject) {
+
+      alert("Aktif proje bulunamadı.");
+
       return;
+
     }
 
 
     if (!currentProject.elements) {
+
       currentProject.elements = [];
+
     }
 
 
-    var element = {
+    const element = {
 
       id:
         Date.now().toString(),
@@ -383,27 +514,49 @@
         type,
 
       content:
-        content
+        content,
+
+      fontSize:
+        type === "heading"
+          ? 38
+          : 17,
+
+      align:
+        "left",
+
+      bold:
+        false
 
     };
 
 
-    currentProject.elements.push(element);
+    currentProject.elements.push(
+      element
+    );
 
 
     canvas.className = "";
 
     renderElement(element);
 
+    selectElement(element);
+
   }
 
 
+  // --------------------------------------------------
+  // ELEMANI EKRANA BAS
+  // --------------------------------------------------
+
   function renderElement(element) {
 
-    var wrapper =
+    const wrapper =
       document.createElement("div");
 
-    wrapper.className = "element";
+
+    wrapper.className =
+      "element";
+
 
     wrapper.dataset.id =
       element.id;
@@ -449,10 +602,18 @@
     }
 
 
-    wrapper.onclick =
-      function() {
+    applyStyle(
+      wrapper,
+      element
+    );
 
-        selectElement(wrapper);
+
+    wrapper.onclick =
+      function(event) {
+
+        event.stopPropagation();
+
+        selectElement(element);
 
       };
 
@@ -462,32 +623,432 @@
   }
 
 
+  // --------------------------------------------------
+  // ELEMAN SEÇ
+  // --------------------------------------------------
+
   function selectElement(element) {
+
+    selectedElement =
+      element;
+
 
     document
       .querySelectorAll(".element")
       .forEach(function(item) {
 
-        item.classList.remove("selected");
+        item.classList.remove(
+          "selected"
+        );
 
       });
 
 
-    element.classList.add("selected");
+    const domElement =
+      document.querySelector(
+        '[data-id="' +
+        element.id +
+        '"]'
+      );
+
+
+    if (domElement) {
+
+      domElement.classList.add(
+        "selected"
+      );
+
+    }
+
+
+    showSettings(element);
 
   }
 
 
+  // --------------------------------------------------
+  // SAĞ PANEL
+  // --------------------------------------------------
+
+  function showSettings(element) {
+
+    let html = "";
+
+
+    html +=
+      '<div class="field">';
+
+    html +=
+      '<label>İçerik</label>';
+
+
+    if (element.type === "image") {
+
+      html +=
+        '<input id="editContent" value="' +
+        escapeAttribute(element.content) +
+        '" placeholder="Görsel URL">';
+
+    } else {
+
+      html +=
+        '<textarea id="editContent">' +
+        escapeHTML(element.content) +
+        '</textarea>';
+
+    }
+
+
+    html +=
+      '</div>';
+
+
+    if (
+      element.type === "heading" ||
+      element.type === "text"
+    ) {
+
+      html +=
+        '<div class="field">';
+
+      html +=
+        '<label>Yazı boyutu</label>';
+
+      html +=
+        '<input id="editFontSize" type="number" value="' +
+        (element.fontSize || 17) +
+        '">';
+
+      html +=
+        '</div>';
+
+
+      html +=
+        '<div class="field">';
+
+      html +=
+        '<label>Hizalama</label>';
+
+      html +=
+        '<select id="editAlign">';
+
+      html +=
+        '<option value="left">Sol</option>';
+
+      html +=
+        '<option value="center">Orta</option>';
+
+      html +=
+        '<option value="right">Sağ</option>';
+
+      html +=
+        '</select>';
+
+      html +=
+        '</div>';
+
+
+      html +=
+        '<div class="field check-row">';
+
+      html +=
+        '<input id="editBold" type="checkbox">';
+
+      html +=
+        '<label for="editBold">Kalın yazı</label>';
+
+      html +=
+        '</div>';
+
+    }
+
+
+    html +=
+      '<button class="update-btn" onclick="updateSelected()">';
+
+    html +=
+      '✓ Güncelle';
+
+    html +=
+      '</button>';
+
+
+    html +=
+      '<button class="delete-btn" onclick="deleteSelected()">';
+
+    html +=
+      '🗑 Elemanı Sil';
+
+    html +=
+      '</button>';
+
+
+    settings.innerHTML =
+      html;
+
+
+    const align =
+      document.getElementById(
+        "editAlign"
+      );
+
+
+    if (align) {
+
+      align.value =
+        element.align || "left";
+
+    }
+
+
+    const bold =
+      document.getElementById(
+        "editBold"
+      );
+
+
+    if (bold) {
+
+      bold.checked =
+        element.bold || false;
+
+    }
+
+  }
+
+
+  // --------------------------------------------------
+  // SEÇİLİ ELEMANI GÜNCELLE
+  // --------------------------------------------------
+
+  function updateSelected() {
+
+    if (!selectedElement) {
+
+      return;
+
+    }
+
+
+    const content =
+      document.getElementById(
+        "editContent"
+      );
+
+
+    if (content) {
+
+      selectedElement.content =
+        content.value;
+
+    }
+
+
+    const fontSize =
+      document.getElementById(
+        "editFontSize"
+      );
+
+
+    if (fontSize) {
+
+      selectedElement.fontSize =
+        Number(fontSize.value) || 17;
+
+    }
+
+
+    const align =
+      document.getElementById(
+        "editAlign"
+      );
+
+
+    if (align) {
+
+      selectedElement.align =
+        align.value;
+
+    }
+
+
+    const bold =
+      document.getElementById(
+        "editBold"
+      );
+
+
+    if (bold) {
+
+      selectedElement.bold =
+        bold.checked;
+
+    }
+
+
+    redraw();
+
+    selectElement(
+      selectedElement
+    );
+
+  }
+
+
+  // --------------------------------------------------
+  // ELEMANI SİL
+  // --------------------------------------------------
+
+  function deleteSelected() {
+
+    if (!selectedElement) {
+
+      return;
+
+    }
+
+
+    const confirmed =
+      confirm(
+        "Bu elemanı silmek istediğine emin misin?"
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    currentProject.elements =
+      currentProject.elements.filter(
+        function(element) {
+
+          return (
+            element.id !==
+            selectedElement.id
+          );
+
+        }
+      );
+
+
+    selectedElement =
+      null;
+
+
+    redraw();
+
+
+    settings.innerHTML =
+      '<div class="settings-empty">' +
+      'Düzenlemek için ortadaki alandan ' +
+      'bir elemana tıkla.' +
+      '</div>';
+
+  }
+
+
+  // --------------------------------------------------
+  // CANVAS YENİLE
+  // --------------------------------------------------
+
+  function redraw() {
+
+    canvas.className = "";
+
+    canvas.innerHTML = "";
+
+
+    if (
+      !currentProject.elements ||
+      currentProject.elements.length === 0
+    ) {
+
+      canvas.className =
+        "canvas-empty";
+
+
+      canvas.innerHTML =
+        "<div>" +
+        "<h2>Web siteni oluşturmaya başla</h2>" +
+        "<p>Soldaki araçlardan bir eleman ekle.</p>" +
+        "</div>";
+
+      return;
+
+    }
+
+
+    currentProject.elements.forEach(
+      function(element) {
+
+        renderElement(element);
+
+      }
+    );
+
+  }
+
+
+  // --------------------------------------------------
+  // STİLLER
+  // --------------------------------------------------
+
+  function applyStyle(
+    wrapper,
+    element
+  ) {
+
+    wrapper.style.textAlign =
+      element.align || "left";
+
+
+    if (
+      element.type === "heading" ||
+      element.type === "text"
+    ) {
+
+      const child =
+        wrapper.firstElementChild;
+
+
+      if (child) {
+
+        child.style.fontSize =
+          (element.fontSize || 17) +
+          "px";
+
+
+        child.style.fontWeight =
+          element.bold
+            ? "700"
+            : "400";
+
+      }
+
+    }
+
+  }
+
+
+  // --------------------------------------------------
+  // BAŞLIK
+  // --------------------------------------------------
+
   function addHeading() {
 
-    var text =
+    const text =
       prompt(
         "Başlık ne olsun?"
       );
 
 
     if (!text) {
+
       return;
+
     }
 
 
@@ -499,16 +1060,22 @@
   }
 
 
+  // --------------------------------------------------
+  // METİN
+  // --------------------------------------------------
+
   function addText() {
 
-    var text =
+    const text =
       prompt(
         "Metin ne olsun?"
       );
 
 
     if (!text) {
+
       return;
+
     }
 
 
@@ -520,16 +1087,22 @@
   }
 
 
+  // --------------------------------------------------
+  // GÖRSEL
+  // --------------------------------------------------
+
   function addImage() {
 
-    var url =
+    const url =
       prompt(
         "Görsel URL'sini gir:"
       );
 
 
     if (!url) {
+
       return;
+
     }
 
 
@@ -541,16 +1114,22 @@
   }
 
 
+  // --------------------------------------------------
+  // BUTON
+  // --------------------------------------------------
+
   function addButton() {
 
-    var text =
+    const text =
       prompt(
         "Buton üzerinde ne yazsın?"
       );
 
 
     if (!text) {
+
       return;
+
     }
 
 
@@ -562,32 +1141,70 @@
   }
 
 
+  // --------------------------------------------------
+  // KAYDET
+  // --------------------------------------------------
+
   function saveSite() {
 
     if (!currentProject) {
+
+      alert(
+        "Aktif proje bulunamadı."
+      );
+
       return;
+
     }
 
 
-    ProjectManager.updateProject(
-      currentProject
-    );
+    const result =
+      ProjectManager.updateProject(
+        currentProject
+      );
 
 
-    alert(
-      "✓ Proje kaydedildi."
-    );
+    if (result) {
+
+      alert(
+        "✓ Proje başarıyla kaydedildi."
+      );
+
+    } else {
+
+      alert(
+        "Proje kaydedilemedi."
+      );
+
+    }
 
   }
 
 
+  // --------------------------------------------------
+  // ANA SAYFA
+  // --------------------------------------------------
+
   function goHome() {
+
+    if (currentProject) {
+
+      ProjectManager.updateProject(
+        currentProject
+      );
+
+    }
+
 
     window.location.href =
       "index.html";
 
   }
 
+
+  // --------------------------------------------------
+  // GÜVENLİ HTML
+  // --------------------------------------------------
 
   function escapeHTML(value) {
 
@@ -600,6 +1217,17 @@
 
   }
 
+
+  function escapeAttribute(value) {
+
+    return escapeHTML(value);
+
+  }
+
+
+  // --------------------------------------------------
+  // BAŞLAT
+  // --------------------------------------------------
 
   loadProject();
 
