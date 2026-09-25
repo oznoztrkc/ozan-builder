@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Ozan Builder - Editör</title>
+
+<style>
+
+*{
+box-sizing:border-box
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f4f8;
+color:#18151f;
+height:100vh;
+overflow:hidden;
+}
+
+header{
+height:64px;
+background:#fff;
+border-bottom:1px solid #ddd;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+}
+
+.logo{
+font-weight:800;
+font-size:20px;
+}
+
+.logo span{
+color:#6d28d9;
+}
+
+.actions{
+display:flex;
+gap:10px;
+}
+
+button{
+border:0;
+border-radius:8px;
+padding:10px 15px;
+cursor:pointer;
+font-weight:600;
+}
+
+.back{
+background:#eee;
+}
+
+.save{
+background:#6d28d9;
+color:white;
+}
+
+.workspace{
+height:calc(100vh - 64px);
+display:grid;
+grid-template-columns:220px 1fr 380px;
+}
+
+.sidebar{
+background:#fff;
+border-right:1px solid #ddd;
+padding:18px;
+}
+
+.sidebar h3{
+margin-top:0;
+}
+
+.file{
+padding:10px;
+border-radius:7px;
+cursor:pointer;
+}
+
+.file:hover{
+background:#f1eef8;
+}
+
+.editor{
+background:#1e1e1e;
+color:#ddd;
+display:flex;
+flex-direction:column;
+}
+
+.editor-title{
+padding:12px 16px;
+background:#252525;
+font-size:13px;
+}
+
+textarea{
+flex:1;
+resize:none;
+border:0;
+outline:0;
+background:#1e1e1e;
+color:#ddd;
+padding:20px;
+font-family:monospace;
+font-size:14px;
+line-height:1.6;
+}
+
+.preview{
+background:#fff;
+display:flex;
+flex-direction:column;
+}
+
+.preview-title{
+height:45px;
+padding:14px;
+border-bottom:1px solid #ddd;
+font-size:13px;
+font-weight:bold;
+}
+
+iframe{
+border:0;
+width:100%;
+height:100%;
+}
+
+.ai{
+position:absolute;
+bottom:20px;
+left:240px;
+right:400px;
+display:flex;
+gap:8px;
+}
+
+.ai input{
+flex:1;
+padding:13px;
+border:1px solid #ccc;
+border-radius:10px;
+}
+
+.ai button{
+background:#6d28d9;
+color:#fff;
+}
+
+@media(max-width:900px){
+
+.workspace{
+grid-template-columns:180px 1fr;
+}
+
+.preview{
+display:none;
+}
+
+.ai{
+left:195px;
+right:20px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+Ozan <span>Builder</span>
+</div>
+
+<div id="projectName">
+Proje
+</div>
+
+<div class="actions">
+
+<button class="back"
+onclick="location.href='index.html'">
+← Projeler
+</button>
+
+<button class="save"
+onclick="saveProject()">
+Kaydet
+</button>
+
+</div>
+
+</header>
+
+
+<div class="workspace">
+
+<aside class="sidebar">
+
+<h3>Dosyalar</h3>
+
+<div
+class="file"
+onclick="selectFile('index.html')">
+📄 index.html
+</div>
+
+<div
+class="file"
+onclick="selectFile('style.css')">
+🎨 style.css
+</div>
+
+<div
+class="file"
+onclick="selectFile('script.js')">
+⚙️ script.js
+</div>
+
+</aside>
+
+
+<section class="editor">
+
+<div class="editor-title" id="fileName">
+index.html
+</div>
+
+<textarea id="code"></textarea>
+
+</section>
+
+
+<section class="preview">
+
+<div class="preview-title">
+Canlı Önizleme
+</div>
+
+<iframe id="preview"></iframe>
+
+</section>
+
+</div>
+
+
+<div class="ai">
+
+<input
+id="aiCommand"
+placeholder="Örn: Ana sayfayı mor-beyaz modern bir tasarıma dönüştür."
+>
+
+<button onclick="runAI()">
+✨ Uygula
+</button>
+
+</div>
+
+
+<script>
+
+const params=new URLSearchParams(
+location.search
+);
+
+const projectId=params.get("id");
+
+const projects=JSON.parse(
+localStorage.getItem("ozan_projects")||"[]"
+);
+
+const project=projects.find(
+p=>String(p.id)===String(projectId)
+);
+
+if(project){
+
+document.getElementById("projectName")
+.innerText=project.name;
+
+}else{
+
+document.getElementById("projectName")
+.innerText="Yeni Proje";
+
+}
+
+
+let currentFile="index.html";
+
+let files={
+"index.html":
+`<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Yeni Proje</title>
+
+</head>
+
+<body>
+
+<h1>Projen hazır 🚀</h1>
+
+<p>
+Ozan Builder ile oluşturuldu.
+</p>
+
+</body>
+
+</html>`,
+
+"style.css":"",
+
+"script.js":""
+};
+
+
+function selectFile(file){
+
+currentFile=file;
+
+document.getElementById("fileName")
+.innerText=file;
+
+document.getElementById("code")
+.value=files[file];
+
+}
+
+
+document
+.getElementById("code")
+.addEventListener("input",function(){
+
+files[currentFile]=this.value;
+
+if(currentFile==="index.html"){
+updatePreview();
+}
+
+});
+
+
+function updatePreview(){
+
+const html=files["index.html"];
+
+document
+.getElementById("preview")
+.srcdoc=html;
+
+}
+
+
+function saveProject(){
+
+localStorage.setItem(
+"project_"+projectId,
+JSON.stringify(files)
+);
+
+alert("Proje kaydedildi.");
+
+}
+
+
+function runAI(){
+
+const command=
+document.getElementById("aiCommand")
+.value
+.trim();
+
+if(!command){
+
+alert("Önce ne yapmak istediğini yaz.");
+
+return;
+
+}
+
+
+/*
+Şimdilik gerçek AI bağlantısı yok.
+Komut sistemi için altyapıyı hazırlıyoruz.
+*/
+
+alert(
+"AI komutu alındı:\n\n"+command+
+"\n\nAI motorunu bir sonraki aşamada bağlayacağız."
+);
+
+}
+
+
+selectFile("index.html");
+
+updatePreview();
+
+</script>
+
+</body>
+</html>
