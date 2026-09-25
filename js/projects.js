@@ -2,40 +2,162 @@
 
 const ProjectManager = {
 
-  storageKey: "ozan_builder_project",
+  storageKey: "ozan_builder_projects",
 
-  getProject() {
-    const saved = localStorage.getItem(this.storageKey);
+  getProjects() {
+
+    const saved =
+      localStorage.getItem(this.storageKey);
 
     if (!saved) {
-      return null;
+
+      // Eski sistemde kayıtlı tek proje varsa
+      // yeni sisteme taşı
+      const oldProject =
+        localStorage.getItem("ozan_builder_project");
+
+      if (oldProject) {
+
+        try {
+
+          const project =
+            JSON.parse(oldProject);
+
+          const projects = [project];
+
+          localStorage.setItem(
+            this.storageKey,
+            JSON.stringify(projects)
+          );
+
+          return projects;
+
+        } catch (error) {
+
+          console.error(
+            "Eski proje taşınamadı:",
+            error
+          );
+
+        }
+
+      }
+
+      return [];
     }
 
     try {
-      return JSON.parse(saved);
+
+      const projects =
+        JSON.parse(saved);
+
+      return Array.isArray(projects)
+        ? projects
+        : [];
+
     } catch (error) {
-      console.error("Proje verisi okunamadı:", error);
-      return null;
+
+      console.error(
+        "Projeler okunamadı:",
+        error
+      );
+
+      return [];
     }
+
   },
 
+
+  getProject(id) {
+
+    const projects =
+      this.getProjects();
+
+    if (!id) {
+
+      return projects.length
+        ? projects[projects.length - 1]
+        : null;
+
+    }
+
+    return projects.find(
+      project => project.id === id
+    ) || null;
+
+  },
+
+
   saveProject(project) {
+
+    const projects =
+      this.getProjects();
+
+    const index =
+      projects.findIndex(
+        item => item.id === project.id
+      );
+
+    if (index >= 0) {
+
+      projects[index] = {
+        ...projects[index],
+        ...project,
+        updatedAt:
+          new Date().toISOString()
+      };
+
+    } else {
+
+      projects.push({
+        ...project,
+        id:
+          project.id ||
+          Date.now().toString(),
+        createdAt:
+          project.createdAt ||
+          new Date().toISOString(),
+        updatedAt:
+          new Date().toISOString()
+      });
+
+    }
+
     localStorage.setItem(
       this.storageKey,
-      JSON.stringify(project)
+      JSON.stringify(projects)
     );
 
     return true;
+
   },
 
-  deleteProject() {
-    localStorage.removeItem(this.storageKey);
+
+  deleteProject(id) {
+
+    const projects =
+      this.getProjects();
+
+    const filtered =
+      projects.filter(
+        project => project.id !== id
+      );
+
+    localStorage.setItem(
+      this.storageKey,
+      JSON.stringify(filtered)
+    );
+
   },
 
-  hasProject() {
-    return this.getProject() !== null;
+
+  hasProjects() {
+
+    return this.getProjects().length > 0;
+
   }
 
 };
 
-window.ProjectManager = ProjectManager;
+window.ProjectManager =
+  ProjectManager;
