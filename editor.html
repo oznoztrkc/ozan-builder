@@ -328,25 +328,57 @@
     });
 
 
-    function saveProject() {
+  function saveProject() {
 
-      var name =
-        nameInput.value.trim();
+  var name =
+    nameInput.value.trim();
 
-      var description =
-        descriptionInput.value.trim();
+  var description =
+    descriptionInput.value.trim();
 
-      var template =
-        document.getElementById("template").value;
+  var template =
+    document.getElementById("template").value;
 
 
-      if (name === "") {
+  if (name === "") {
 
-        alert("Lütfen proje adını yaz.");
+    alert("Lütfen proje adını yaz.");
 
-        return;
+    return;
 
-      }
+  }
+
+
+  // Projeyi merkezi proje sistemiyle oluştur
+  var project = createProject(
+    name,
+    description,
+    template
+  );
+
+
+  if (!project) {
+
+    alert("Proje oluşturulamadı.");
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "message"
+  ).style.display = "block";
+
+
+  // Kısa süre sonra ana sayfaya dön
+  setTimeout(function () {
+
+    window.location.href = "index.html";
+
+  }, 800);
+
+}
 
 
       var project = {
