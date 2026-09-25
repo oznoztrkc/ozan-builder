@@ -14,14 +14,14 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
+      background: #f4f6f9;
       color: #111827;
     }
 
-    .topbar {
+    header {
       height: 64px;
       background: white;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -29,246 +29,264 @@
     }
 
     .logo {
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 21px;
+      font-weight: 800;
     }
 
     .logo span {
       color: #635bff;
     }
 
-    .back {
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
       border: 0;
-      background: #eef0f4;
-      padding: 10px 15px;
       border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .back {
+      background: #eef0f4;
+      color: #111827;
+    }
+
+    .save {
+      background: #635bff;
+      color: white;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 64px);
+    }
+
+    .sidebar {
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      padding: 20px;
+    }
+
+    .sidebar h3 {
+      margin: 0 0 18px;
+    }
+
+    .tool {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 10px;
+      text-align: left;
+      padding: 13px;
+      border-radius: 9px;
       cursor: pointer;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 35px 20px;
+    .tool:hover {
+      background: #eef2ff;
+      border-color: #c7d2fe;
     }
 
-    .title {
-      margin-bottom: 25px;
+    .workspace {
+      padding: 25px;
+      overflow: auto;
     }
 
-    .title h1 {
-      margin: 0 0 8px;
+    .project-title {
+      margin-bottom: 18px;
     }
 
-    .title p {
+    .project-title h1 {
+      margin: 0 0 5px;
+      font-size: 25px;
+    }
+
+    .project-title p {
       margin: 0;
       color: #6b7280;
     }
 
-    .card {
+    .canvas {
+      max-width: 1000px;
+      min-height: 600px;
+      margin: auto;
       background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 25px;
-      margin-bottom: 20px;
+      border: 1px solid #dfe3e8;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.05);
+      padding: 40px;
     }
 
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
+    .canvas-empty {
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #d1d5db;
+      border-radius: 10px;
+      color: #9ca3af;
+      text-align: center;
     }
 
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      margin-bottom: 18px;
-      font-size: 15px;
-    }
-
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-    }
-
-    button.primary {
-      width: 100%;
-      border: 0;
-      background: #635bff;
-      color: white;
-      padding: 14px;
-      border-radius: 9px;
-      font-size: 16px;
-      font-weight: bold;
+    .element {
+      position: relative;
+      padding: 15px;
+      margin-bottom: 12px;
+      border: 1px solid transparent;
       cursor: pointer;
     }
 
-    button.primary:hover {
-      background: #5048d8;
+    .element:hover {
+      border: 1px dashed #635bff;
     }
 
-    .preview {
-      margin-top: 25px;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      overflow: hidden;
+    .element.selected {
+      border: 2px solid #635bff;
     }
 
-    .preview-bar {
-      background: #f1f3f5;
-      padding: 12px;
-      color: #666;
-      font-size: 13px;
+    .element h1 {
+      font-size: 38px;
+      margin: 0 0 10px;
     }
 
-    .preview-content {
-      padding: 50px 25px;
-      text-align: center;
-      min-height: 300px;
-    }
-
-    .preview-content h2 {
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    .preview-content p {
+    .element p {
       color: #6b7280;
       line-height: 1.6;
+      font-size: 17px;
     }
 
-    .message {
-      display: none;
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #ecfdf5;
-      color: #047857;
+    .element img {
+      max-width: 100%;
+      border-radius: 10px;
     }
 
-    @media (max-width: 700px) {
-      .container {
-        padding: 25px 15px;
+    .empty-message {
+      text-align: center;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 800px) {
+
+      .layout {
+        grid-template-columns: 1fr;
       }
+
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .canvas {
+        padding: 20px;
+      }
+
     }
   </style>
 </head>
-<script src="js/projects.js"></script>
-<script src="js/editor.js"></script>
-<script src="js/voice.js"></script>
+
 <body>
 
-  <header class="topbar">
+<header>
 
-    <div class="logo">
-      Ozan <span>Builder</span>
-    </div>
+  <div class="logo">
+    Ozan <span>Builder</span>
+  </div>
 
-    <button class="back" onclick="goHome()">
-      ← Ana Sayfa
+  <div class="header-actions">
+
+    <button
+      class="back"
+      onclick="goHome()"
+    >
+      ← Projeler
     </button>
 
-  </header>
+    <button
+      class="save"
+      onclick="saveSite()"
+    >
+      Kaydet
+    </button>
+
+  </div>
+
+</header>
 
 
-  <main class="container">
+<div class="layout">
 
-    <div class="title">
-      <h1>Yeni Proje</h1>
+  <aside class="sidebar">
 
-      <p>
-        Web sitenin temel bilgilerini oluştur.
+    <h3>
+      Elemanlar
+    </h3>
+
+    <button
+      class="tool"
+      onclick="addHeading()"
+    >
+      ➕ Başlık ekle
+    </button>
+
+    <button
+      class="tool"
+      onclick="addText()"
+    >
+      📝 Metin ekle
+    </button>
+
+    <button
+      class="tool"
+      onclick="addImage()"
+    >
+      🖼️ Görsel ekle
+    </button>
+
+    <button
+      class="tool"
+      onclick="addButton()"
+    >
+      🔘 Buton ekle
+    </button>
+
+  </aside>
+
+
+  <main class="workspace">
+
+    <div class="project-title">
+
+      <h1 id="projectName">
+        Proje
+      </h1>
+
+      <p id="projectDescription">
+        Web siteni burada tasarlayabilirsin.
       </p>
+
     </div>
 
 
-    <div class="card">
-
-      <label for="name">
-        Proje adı
-      </label>
-
-      <input
-        id="name"
-        type="text"
-        placeholder="Örn: Benim Web Sitem"
-      >
-
-
-      <label for="description">
-        Açıklama
-      </label>
-
-      <textarea
-        id="description"
-        placeholder="Web siten hakkında kısa bir açıklama..."
-      ></textarea>
-
-
-      <label for="template">
-        Şablon
-      </label>
-
-      <select id="template">
-
-        <option value="blank">
-          Boş Proje
-        </option>
-
-        <option value="business">
-          Kurumsal
-        </option>
-
-        <option value="portfolio">
-          Portföy
-        </option>
-
-        <option value="blog">
-          Blog
-        </option>
-
-      </select>
-
-
-      <button
-        class="primary"
-        onclick="saveProject()"
-      >
-        Projeyi Oluştur
-      </button>
-
+    <div class="canvas">
 
       <div
-        id="message"
-        class="message"
+        id="canvasContent"
+        class="canvas-empty"
       >
-        ✓ Proje başarıyla oluşturuldu.
-      </div>
 
-    </div>
+        <div>
 
-
-    <div class="card">
-
-      <h2>Canlı Önizleme</h2>
-
-      <div class="preview">
-
-        <div class="preview-bar">
-          Ozan Builder Preview
-        </div>
-
-        <div class="preview-content">
-
-          <h2 id="previewName">
-            Web sitenin başlığı
+          <h2>
+            Web siteni oluşturmaya başla
           </h2>
 
-          <p id="previewDescription">
-            Proje açıklaman burada görünecek.
+          <p>
+            Soldaki araçlardan bir eleman ekle.
           </p>
 
         </div>
@@ -279,141 +297,313 @@
 
   </main>
 
-
-  <script>
-
-    var nameInput = document.getElementById("name");
-
-    var descriptionInput =
-      document.getElementById("description");
-
-    var previewName =
-      document.getElementById("previewName");
-
-    var previewDescription =
-      document.getElementById("previewDescription");
+</div>
 
 
-    nameInput.addEventListener("input", function () {
+<script src="js/projects.js"></script>
 
-      if (nameInput.value.trim() === "") {
+<script>
 
-        previewName.textContent =
-          "Web sitenin başlığı";
+  var currentProject = null;
 
-      } else {
-
-        previewName.textContent =
-          nameInput.value;
-
-      }
-
-    });
+  var canvas =
+    document.getElementById("canvasContent");
 
 
-    descriptionInput.addEventListener("input", function () {
+  function loadProject() {
 
-      if (descriptionInput.value.trim() === "") {
-
-        previewDescription.textContent =
-          "Proje açıklaman burada görünecek.";
-
-      } else {
-
-        previewDescription.textContent =
-          descriptionInput.value;
-
-      }
-
-    });
+    currentProject =
+      ProjectManager.getCurrentProject();
 
 
-  function saveProject() {
+    if (!currentProject) {
 
-  var name =
-    nameInput.value.trim();
+      document.getElementById(
+        "projectName"
+      ).textContent = "Proje bulunamadı";
 
-  var description =
-    descriptionInput.value.trim();
+      return;
 
-  var template =
-    document.getElementById("template").value;
+    }
 
 
-  if (name === "") {
+    document.getElementById(
+      "projectName"
+    ).textContent =
+      currentProject.name;
 
-    alert("Lütfen proje adını yaz.");
 
-    return;
+    document.getElementById(
+      "projectDescription"
+    ).textContent =
+      currentProject.description ||
+      "Web siteni burada tasarlayabilirsin.";
+
+
+    if (
+      currentProject.elements &&
+      currentProject.elements.length > 0
+    ) {
+
+      canvas.className = "";
+
+      canvas.innerHTML = "";
+
+      currentProject.elements.forEach(
+        function(element) {
+
+          renderElement(element);
+
+        }
+      );
+
+    }
 
   }
 
 
-  // Projeyi merkezi proje sistemiyle oluştur
-  var project = createProject(
-    name,
-    description,
-    template
-  );
+  function addElement(type, content) {
+
+    if (!currentProject) {
+      return;
+    }
 
 
-  if (!project) {
+    if (!currentProject.elements) {
+      currentProject.elements = [];
+    }
 
-    alert("Proje oluşturulamadı.");
 
-    return;
+    var element = {
+
+      id:
+        Date.now().toString(),
+
+      type:
+        type,
+
+      content:
+        content
+
+    };
+
+
+    currentProject.elements.push(element);
+
+
+    canvas.className = "";
+
+    renderElement(element);
 
   }
 
 
-  document.getElementById(
-    "message"
-  ).style.display = "block";
+  function renderElement(element) {
+
+    var wrapper =
+      document.createElement("div");
+
+    wrapper.className = "element";
+
+    wrapper.dataset.id =
+      element.id;
 
 
-  // Kısa süre sonra ana sayfaya dön
-  setTimeout(function () {
+    if (element.type === "heading") {
 
-    window.location.href = "index.html";
+      wrapper.innerHTML =
+        "<h1>" +
+        escapeHTML(element.content) +
+        "</h1>";
 
-  }, 800);
-
-}
+    }
 
 
-      var project = {
+    if (element.type === "text") {
 
-        name: name,
+      wrapper.innerHTML =
+        "<p>" +
+        escapeHTML(element.content) +
+        "</p>";
 
-        description: description,
+    }
 
-        template: template,
 
-        createdAt: new Date().toISOString()
+    if (element.type === "image") {
+
+      wrapper.innerHTML =
+        "<img src=\"" +
+        escapeHTML(element.content) +
+        "\" alt=\"Görsel\">";
+
+    }
+
+
+    if (element.type === "button") {
+
+      wrapper.innerHTML =
+        "<button>" +
+        escapeHTML(element.content) +
+        "</button>";
+
+    }
+
+
+    wrapper.onclick =
+      function() {
+
+        selectElement(wrapper);
 
       };
 
 
-      localStorage.setItem(
-        "ozan_builder_project",
-        JSON.stringify(project)
+    canvas.appendChild(wrapper);
+
+  }
+
+
+  function selectElement(element) {
+
+    document
+      .querySelectorAll(".element")
+      .forEach(function(item) {
+
+        item.classList.remove("selected");
+
+      });
+
+
+    element.classList.add("selected");
+
+  }
+
+
+  function addHeading() {
+
+    var text =
+      prompt(
+        "Başlık ne olsun?"
       );
 
 
-      document.getElementById(
-        "message"
-      ).style.display = "block";
-
+    if (!text) {
+      return;
     }
 
 
-    function goHome() {
+    addElement(
+      "heading",
+      text
+    );
 
-      window.location.href = "index.html";
+  }
 
+
+  function addText() {
+
+    var text =
+      prompt(
+        "Metin ne olsun?"
+      );
+
+
+    if (!text) {
+      return;
     }
 
-  </script>
+
+    addElement(
+      "text",
+      text
+    );
+
+  }
+
+
+  function addImage() {
+
+    var url =
+      prompt(
+        "Görsel URL'sini gir:"
+      );
+
+
+    if (!url) {
+      return;
+    }
+
+
+    addElement(
+      "image",
+      url
+    );
+
+  }
+
+
+  function addButton() {
+
+    var text =
+      prompt(
+        "Buton üzerinde ne yazsın?"
+      );
+
+
+    if (!text) {
+      return;
+    }
+
+
+    addElement(
+      "button",
+      text
+    );
+
+  }
+
+
+  function saveSite() {
+
+    if (!currentProject) {
+      return;
+    }
+
+
+    ProjectManager.updateProject(
+      currentProject
+    );
+
+
+    alert(
+      "✓ Proje kaydedildi."
+    );
+
+  }
+
+
+  function goHome() {
+
+    window.location.href =
+      "index.html";
+
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  loadProject();
+
+</script>
 
 </body>
 </html>
