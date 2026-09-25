@@ -4,34 +4,33 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ozan Builder - Yeni Proje</title>
+  <title>Ozan Builder - Editör</title>
 
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      font-family: Arial, sans-serif;
       background: #f5f7fb;
-      color: #171717;
+      color: #111827;
     }
 
-    header {
+    .topbar {
       height: 64px;
       background: white;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid #ddd;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 25px;
+      padding: 0 20px;
     }
 
     .logo {
       font-size: 22px;
-      font-weight: 800;
+      font-weight: bold;
     }
 
     .logo span {
@@ -39,44 +38,348 @@
     }
 
     .back {
-      border: none;
-      background: #f1f5f9;
-      padding: 9px 15px;
+      border: 0;
+      background: #eef0f4;
+      padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      min-height: calc(100vh - 64px);
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 35px 20px;
     }
 
-    .sidebar {
-      background: white;
-      border-right: 1px solid #e5e7eb;
-      padding: 30px;
+    .title {
+      margin-bottom: 25px;
     }
 
-    .sidebar h1 {
-      font-size: 25px;
-      margin-bottom: 8px;
+    .title h1 {
+      margin: 0 0 8px;
     }
 
-    .subtitle {
+    .title p {
+      margin: 0;
       color: #6b7280;
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 25px;
+      margin-bottom: 20px;
     }
 
     label {
       display: block;
-      font-size: 14px;
-      font-weight: 600;
+      font-weight: bold;
       margin-bottom: 8px;
     }
 
     input,
     textarea,
     select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    button.primary {
+      width: 100%;
+      border: 0;
+      background: #635bff;
+      color: white;
+      padding: 14px;
+      border-radius: 9px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.primary:hover {
+      background: #5048d8;
+    }
+
+    .preview {
+      margin-top: 25px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .preview-bar {
+      background: #f1f3f5;
+      padding: 12px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    .preview-content {
+      padding: 50px 25px;
+      text-align: center;
+      min-height: 300px;
+    }
+
+    .preview-content h2 {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .preview-content p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #ecfdf5;
+      color: #047857;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 25px 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+
+    <div class="logo">
+      Ozan <span>Builder</span>
+    </div>
+
+    <button class="back" onclick="goHome()">
+      ← Ana Sayfa
+    </button>
+
+  </header>
+
+
+  <main class="container">
+
+    <div class="title">
+      <h1>Yeni Proje</h1>
+
+      <p>
+        Web sitenin temel bilgilerini oluştur.
+      </p>
+    </div>
+
+
+    <div class="card">
+
+      <label for="name">
+        Proje adı
+      </label>
+
+      <input
+        id="name"
+        type="text"
+        placeholder="Örn: Benim Web Sitem"
+      >
+
+
+      <label for="description">
+        Açıklama
+      </label>
+
+      <textarea
+        id="description"
+        placeholder="Web siten hakkında kısa bir açıklama..."
+      ></textarea>
+
+
+      <label for="template">
+        Şablon
+      </label>
+
+      <select id="template">
+
+        <option value="blank">
+          Boş Proje
+        </option>
+
+        <option value="business">
+          Kurumsal
+        </option>
+
+        <option value="portfolio">
+          Portföy
+        </option>
+
+        <option value="blog">
+          Blog
+        </option>
+
+      </select>
+
+
+      <button
+        class="primary"
+        onclick="saveProject()"
+      >
+        Projeyi Oluştur
+      </button>
+
+
+      <div
+        id="message"
+        class="message"
+      >
+        ✓ Proje başarıyla oluşturuldu.
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Canlı Önizleme</h2>
+
+      <div class="preview">
+
+        <div class="preview-bar">
+          Ozan Builder Preview
+        </div>
+
+        <div class="preview-content">
+
+          <h2 id="previewName">
+            Web sitenin başlığı
+          </h2>
+
+          <p id="previewDescription">
+            Proje açıklaman burada görünecek.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    var nameInput = document.getElementById("name");
+
+    var descriptionInput =
+      document.getElementById("description");
+
+    var previewName =
+      document.getElementById("previewName");
+
+    var previewDescription =
+      document.getElementById("previewDescription");
+
+
+    nameInput.addEventListener("input", function () {
+
+      if (nameInput.value.trim() === "") {
+
+        previewName.textContent =
+          "Web sitenin başlığı";
+
+      } else {
+
+        previewName.textContent =
+          nameInput.value;
+
+      }
+
+    });
+
+
+    descriptionInput.addEventListener("input", function () {
+
+      if (descriptionInput.value.trim() === "") {
+
+        previewDescription.textContent =
+          "Proje açıklaman burada görünecek.";
+
+      } else {
+
+        previewDescription.textContent =
+          descriptionInput.value;
+
+      }
+
+    });
+
+
+    function saveProject() {
+
+      var name =
+        nameInput.value.trim();
+
+      var description =
+        descriptionInput.value.trim();
+
+      var template =
+        document.getElementById("template").value;
+
+
+      if (name === "") {
+
+        alert("Lütfen proje adını yaz.");
+
+        return;
+
+      }
+
+
+      var project = {
+
+        name: name,
+
+        description: description,
+
+        template: template,
+
+        createdAt: new Date().toISOString()
+
+      };
+
+
+      localStorage.setItem(
+        "ozan_builder_project",
+        JSON.stringify(project)
+      );
+
+
+      document.getElementById(
+        "message"
+      ).style.display = "block";
+
+    }
+
+
+    function goHome() {
+
+      window.location.href = "index.html";
+
+    }
+
+  </script>
+
+</body>
+</html>
