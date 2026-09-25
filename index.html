@@ -8,204 +8,143 @@
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f5f7;
-      color: #222;
+      background: #f6f5fa;
+      color: #17151f;
     }
 
     header {
-      height: 64px;
-      background: #171717;
-      color: white;
+      height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e2eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
+      padding: 0 30px;
     }
 
     .logo {
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 22px;
+      font-weight: 800;
     }
 
     .logo span {
-      color: #8b5cf6;
+      color: #6d28d9;
     }
 
-    .status {
-      font-size: 13px;
-      color: #aaa;
+    .container {
+      max-width: 1100px;
+      margin: 50px auto;
+      padding: 0 20px;
     }
 
-    .app {
-      display: grid;
-      grid-template-columns: 280px 1fr 280px;
-      height: calc(100vh - 64px);
+    .hero {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      color: white;
+      border-radius: 22px;
+      padding: 45px;
+      margin-bottom: 35px;
     }
 
-    .sidebar,
-    .rightbar {
-      background: white;
-      border-right: 1px solid #ddd;
-      padding: 20px;
-      overflow-y: auto;
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 38px;
     }
 
-    .rightbar {
-      border-right: none;
-      border-left: 1px solid #ddd;
-    }
-
-    .workspace {
-      padding: 24px;
-      overflow: auto;
-    }
-
-    h2 {
-      font-size: 16px;
-      margin-bottom: 16px;
-    }
-
-    .section {
-      margin-bottom: 24px;
+    .hero p {
+      margin: 0;
+      opacity: .9;
+      font-size: 17px;
     }
 
     .button {
-      width: 100%;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      background: #f1f1f1;
-      margin-bottom: 8px;
+      border: 0;
+      background: #6d28d9;
+      color: white;
+      padding: 13px 20px;
+      border-radius: 10px;
       cursor: pointer;
-      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
     }
 
     .button:hover {
-      background: #e7e7e7;
+      opacity: .9;
     }
 
-    .primary {
-      background: #7c3aed;
-      color: white;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .primary:hover {
-      background: #6d28d9;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 130px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 12px;
-      resize: vertical;
-      font-family: inherit;
-      outline: none;
-    }
-
-    textarea:focus {
-      border-color: #7c3aed;
-    }
-
-    .preview {
-      min-height: 600px;
+    .new-project {
       background: white;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      box-shadow: 0 4px 20px rgba(0,0,0,.05);
-      overflow: hidden;
+      padding: 30px;
+      border-radius: 18px;
+      border: 1px solid #e5e2eb;
+      margin-bottom: 35px;
     }
 
-    .preview-header {
-      height: 55px;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-      font-weight: bold;
-    }
-
-    .preview-content {
-      padding: 40px;
-    }
-
-    .preview-content h1 {
-      font-size: 40px;
-      margin-bottom: 16px;
-    }
-
-    .preview-content p {
-      color: #666;
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-
-    .empty {
-      color: #999;
-      text-align: center;
-      padding: 80px 20px;
-    }
-
-    .field {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 7px;
+    .new-project h2 {
+      margin-top: 0;
     }
 
     input,
+    textarea,
     select {
       width: 100%;
-      padding: 11px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      outline: none;
+      padding: 13px;
+      margin: 8px 0 18px;
+      border: 1px solid #d9d5e2;
+      border-radius: 9px;
+      font-size: 15px;
     }
 
-    input:focus,
-    select:focus {
-      border-color: #7c3aed;
+    textarea {
+      min-height: 100px;
+      resize: vertical;
     }
 
-    .mobile-preview {
-      max-width: 390px;
-      margin: auto;
+    .projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
     }
 
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 220px 1fr;
-      }
-
-      .rightbar {
-        display: none;
-      }
+    .project {
+      background: white;
+      border: 1px solid #e5e2eb;
+      border-radius: 16px;
+      padding: 22px;
     }
 
-    @media (max-width: 650px) {
-      .app {
-        display: block;
+    .project h3 {
+      margin-top: 0;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 35px;
+      color: #777;
+      background: white;
+      border-radius: 16px;
+      border: 1px dashed #ccc;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 0 15px;
       }
 
-      .sidebar {
-        display: none;
+      .container {
+        margin: 25px auto;
       }
 
-      .workspace {
-        padding: 12px;
+      .hero {
+        padding: 30px 22px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
       }
     }
   </style>
@@ -215,307 +154,164 @@
 
 <header>
   <div class="logo">Ozan <span>Builder</span></div>
-  <div class="status">Ücretsiz Web Site Builder</div>
+  <button class="button" onclick="showForm()">+ Yeni Proje</button>
 </header>
 
-<div class="app">
+<main class="container">
 
-  <aside class="sidebar">
+  <section class="hero">
+    <h1>Kendi web siteni oluştur.</h1>
+    <p>
+      Projeni oluştur, tasarla ve ilerleyen aşamalarda
+      yapay zekâ ile geliştirmeye devam et.
+    </p>
+  </section>
 
-    <div class="section">
-      <h2>Sayfa</h2>
+  <section class="new-project" id="projectForm" style="display:none;">
 
-      <button class="button" onclick="newPage()">
-        + Yeni Sayfa
-      </button>
+    <h2>Yeni Proje Oluştur</h2>
 
-      <button class="button" onclick="selectPage('Ana Sayfa')">
-        🏠 Ana Sayfa
-      </button>
+    <label>Proje adı</label>
+    <input
+      id="projectName"
+      type="text"
+      placeholder="Örn: Digiturk İnternet Bilgi Portalı"
+    >
 
-      <button class="button" onclick="selectPage('Hakkımızda')">
-        📄 Hakkımızda
-      </button>
+    <label>Açıklama</label>
+    <textarea
+      id="projectDescription"
+      placeholder="Projen ne yapacak?"
+    ></textarea>
 
-      <button class="button" onclick="selectPage('İletişim')">
-        📞 İletişim
-      </button>
-    </div>
+    <label>Başlangıç şablonu</label>
 
-    <div class="section">
-      <h2>Bileşenler</h2>
+    <select id="projectTemplate">
+      <option value="blank">Boş Proje</option>
+      <option value="corporate">Kurumsal Site</option>
+      <option value="portal">Bilgi Portalı</option>
+      <option value="landing">Tanıtım Sayfası</option>
+    </select>
 
-      <button class="button" onclick="addComponent('Başlık')">
-        T Başlık
-      </button>
+    <button class="button" onclick="createProject()">
+      Projeyi Oluştur
+    </button>
 
-      <button class="button" onclick="addComponent('Metin')">
-        📝 Metin
-      </button>
+  </section>
 
-      <button class="button" onclick="addComponent('Buton')">
-        🔘 Buton
-      </button>
+  <section>
 
-      <button class="button" onclick="addComponent('Görsel')">
-        🖼 Görsel
-      </button>
+    <h2>Projelerim</h2>
 
-      <button class="button" onclick="addComponent('Kart')">
-        🗂 Kart
-      </button>
-    </div>
+    <div id="projects" class="projects">
 
-  </aside>
-
-  <main class="workspace">
-
-    <div class="preview">
-
-      <div class="preview-header">
-        <span id="pageName">Ana Sayfa</span>
-      </div>
-
-      <div id="previewContent" class="preview-content">
-
-        <h1>Web siteni oluşturmaya başla</h1>
-
-        <p>
-          Sol taraftaki bileşenleri kullanabilir veya sağ taraftaki
-          ayarlardan sitenin içeriğini değiştirebilirsin.
-        </p>
-
+      <div class="empty">
+        Henüz oluşturulmuş bir proje yok.
+        <br><br>
+        İlk projenizi oluşturmak için
+        <strong>Yeni Proje</strong> butonuna basın.
       </div>
 
     </div>
 
-  </main>
+  </section>
 
-  <aside class="rightbar">
-
-    <div class="section">
-
-      <h2>Sayfa Ayarları</h2>
-
-      <div class="field">
-        <label>Site Başlığı</label>
-
-        <input
-          id="siteTitle"
-          type="text"
-          value="Yeni Web Sitem"
-          oninput="updateSite()"
-        >
-      </div>
-
-      <div class="field">
-        <label>Başlık</label>
-
-        <input
-          id="mainTitle"
-          type="text"
-          value="Web siteni oluşturmaya başla"
-          oninput="updateSite()"
-        >
-      </div>
-
-      <div class="field">
-
-        <label>Açıklama</label>
-
-        <textarea
-          id="description"
-          oninput="updateSite()"
-        >Sol taraftaki bileşenleri kullanarak web siteni oluştur.</textarea>
-
-      </div>
-
-      <button class="button primary" onclick="saveSite()">
-        💾 Kaydet
-      </button>
-
-      <button class="button" onclick="previewSite()">
-        👁 Önizleme
-      </button>
-
-    </div>
-
-    <div class="section">
-
-      <h2>AI Komutu</h2>
-
-      <textarea
-        id="aiCommand"
-        placeholder="Örn: Mor ve beyaz renklerde modern bir internet sitesi oluştur..."
-      ></textarea>
-
-      <button class="button primary" onclick="runAICommand()">
-        ✨ Komutu Uygula
-      </button>
-
-    </div>
-
-  </aside>
-
-</div>
+</main>
 
 <script>
 
-let pages = {
-  "Ana Sayfa": {
-    title: "Web siteni oluşturmaya başla",
-    description: "Sol taraftaki bileşenleri kullanarak web siteni oluştur."
-  },
+function showForm() {
+  const form = document.getElementById("projectForm");
 
-  "Hakkımızda": {
-    title: "Hakkımızda",
-    description: "Bu alanı daha sonra düzenleyebilirsin."
-  },
-
-  "İletişim": {
-    title: "İletişim",
-    description: "İletişim bilgilerini buraya ekleyebilirsin."
-  }
-};
-
-let currentPage = "Ana Sayfa";
-
-function selectPage(page) {
-
-  currentPage = page;
-
-  document.getElementById("pageName").innerText = page;
-
-  document.getElementById("mainTitle").value =
-    pages[page].title;
-
-  document.getElementById("description").value =
-    pages[page].description;
-
-  updateSite();
-}
-
-function updateSite() {
-
-  const title =
-    document.getElementById("mainTitle").value;
-
-  const description =
-    document.getElementById("description").value;
-
-  pages[currentPage] = {
-    title: title,
-    description: description
-  };
-
-  document.getElementById("previewContent").innerHTML = `
-    <h1>${escapeHTML(title)}</h1>
-    <p>${escapeHTML(description)}</p>
-  `;
-}
-
-function newPage() {
-
-  const name =
-    prompt("Yeni sayfanın adı:");
-
-  if (!name) return;
-
-  pages[name] = {
-    title: name,
-    description: "Bu sayfanın içeriğini düzenleyebilirsin."
-  };
-
-  selectPage(name);
-}
-
-function addComponent(type) {
-
-  const container =
-    document.getElementById("previewContent");
-
-  if (type === "Başlık") {
-
-    container.innerHTML +=
-      "<h2>Yeni Başlık</h2>";
-
-  }
-
-  if (type === "Metin") {
-
-    container.innerHTML +=
-      "<p>Yeni metin alanı.</p>";
-
-  }
-
-  if (type === "Buton") {
-
-    container.innerHTML +=
-      '<button class="button primary">Yeni Buton</button>';
-
-  }
-
-  if (type === "Görsel") {
-
-    container.innerHTML +=
-      "<p>🖼 Görsel alanı</p>";
-
-  }
-
-  if (type === "Kart") {
-
-    container.innerHTML += `
-      <div style="
-        padding:20px;
-        border:1px solid #ddd;
-        border-radius:12px;
-        margin-top:20px;
-      ">
-        <h3>Yeni Kart</h3>
-        <p>Kart açıklaması.</p>
-      </div>
-    `;
-
+  if (form.style.display === "none") {
+    form.style.display = "block";
+    form.scrollIntoView({ behavior: "smooth" });
+  } else {
+    form.style.display = "none";
   }
 }
 
-function saveSite() {
+function createProject() {
 
-  localStorage.setItem(
-    "ozan-builder-pages",
-    JSON.stringify(pages)
-  );
+  const name = document.getElementById("projectName").value.trim();
+  const description = document.getElementById("projectDescription").value.trim();
+  const template = document.getElementById("projectTemplate").value;
 
-  alert("Site tarayıcıya kaydedildi.");
-}
-
-function previewSite() {
-
-  alert(
-    "Önizleme modu sonraki aşamada ayrı bir sayfa olarak geliştirilecek."
-  );
-}
-
-function runAICommand() {
-
-  const command =
-    document.getElementById("aiCommand").value.trim();
-
-  if (!command) {
-
-    alert("Önce bir komut yaz.");
-
+  if (!name) {
+    alert("Lütfen proje adını gir.");
     return;
   }
 
-  alert(
-    "AI motoru henüz bağlanmadı.\n\nKomutun alındı:\n" +
-    command +
-    "\n\nSonraki aşamada gerçek AI bağlantısını ekleyeceğiz."
+  const project = {
+    id: Date.now(),
+    name: name,
+    description: description,
+    template: template,
+    createdAt: new Date().toLocaleString("tr-TR")
+  };
+
+  const projects =
+    JSON.parse(localStorage.getItem("ozan_projects") || "[]");
+
+  projects.push(project);
+
+  localStorage.setItem(
+    "ozan_projects",
+    JSON.stringify(projects)
   );
+
+  renderProjects();
+
+  document.getElementById("projectName").value = "";
+  document.getElementById("projectDescription").value = "";
+
+  document.getElementById("projectForm").style.display = "none";
 }
 
-function escapeHTML(text) {
+function renderProjects() {
+
+  const container = document.getElementById("projects");
+
+  const projects =
+    JSON.parse(localStorage.getItem("ozan_projects") || "[]");
+
+  if (projects.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        Henüz oluşturulmuş bir proje yok.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = projects.map(project => `
+
+    <div class="project">
+
+      <h3>${escapeHtml(project.name)}</h3>
+
+      <p>
+        ${escapeHtml(
+          project.description || "Açıklama eklenmemiş."
+        )}
+      </p>
+
+      <small>
+        Şablon: ${escapeHtml(project.template)}
+      </small>
+
+      <br><br>
+
+      <small>
+        Oluşturulma: ${escapeHtml(project.createdAt)}
+      </small>
+
+    </div>
+
+  `).join("");
+}
+
+function escapeHtml(text) {
 
   const div = document.createElement("div");
 
@@ -523,6 +319,8 @@ function escapeHTML(text) {
 
   return div.innerHTML;
 }
+
+renderProjects();
 
 </script>
 
